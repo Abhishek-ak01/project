@@ -130,6 +130,10 @@ export default function ProductDetailPage() {
               src={product.images?.[activeImageIndex] || product.images?.[0]}
               alt={product.title}
               className="w-full h-full object-cover transition-all duration-300"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80';
+              }}
             />
             {product.isOrganic && (
               <span className="absolute top-4 left-4 bg-forest-900/90 backdrop-blur-md text-emerald-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">

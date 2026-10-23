@@ -121,7 +121,7 @@ export default function SellerProductsPage() {
           description: formData.description,
           images: [formData.imageUrl],
           isOrganic: formData.isOrganic,
-        });
+        }, sellerId);
         addToast(`Updated "${formData.title}"`, 'success');
       } else {
         await addProduct({
@@ -136,7 +136,7 @@ export default function SellerProductsPage() {
           images: [formData.imageUrl],
           isOrganic: formData.isOrganic,
           originNeighborhood: user?.neighborhood || 'Eastside Mill District',
-        });
+        }, sellerId);
         addToast(`Added new product "${formData.title}"!`, 'success');
       }
       setIsModalOpen(false);
@@ -151,7 +151,7 @@ export default function SellerProductsPage() {
   const handleDelete = async (productId, title) => {
     if (window.confirm(`Are you sure you want to remove "${title}" from your storefront catalog?`)) {
       try {
-        await deleteProduct(productId);
+        await deleteProduct(productId, sellerId);
         addToast(`Removed "${title}" from catalog`, 'info');
         loadSellerProducts();
       } catch (err) {
@@ -163,7 +163,7 @@ export default function SellerProductsPage() {
   const handleQuickRestock = async (product) => {
     try {
       const newQty = product.stockQuantity + 10;
-      await updateProduct(product.id, { stockQuantity: newQty });
+      await updateProduct(product.id, { stockQuantity: newQty }, sellerId);
       addToast(`Restocked ${product.title} (+10 units, total ${newQty})`, 'success');
       loadSellerProducts();
     } catch (err) {

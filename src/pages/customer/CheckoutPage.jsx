@@ -22,7 +22,7 @@ import { formatCurrency } from '../../utils/formatters';
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { cartItems, subtotal, deliveryFee, estimatedTax, estimatedTotal, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated, switchDemoRole } = useAuth();
   const { addToast } = useToast();
 
   const [deliveryType, setDeliveryType] = useState('local_delivery'); // 'local_delivery' | 'pickup'
@@ -71,12 +71,19 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setOrderError('');
+
+    if (!user || !user.id) {
+      setOrderError('Authentication required: Please sign in or register before checking out.');
+      addToast('Please sign in to place your order.', 'warning');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       // Package payload for authoritative server-side processing
       const payload = {
-        customerId: user?.id || 'user-customer-1',
+        customerId: user.id,
         customerName: formData.fullName,
         customerEmail: formData.email,
         customerPhone: formData.phone,
@@ -131,6 +138,31 @@ export default function CheckoutPage() {
         <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-3">
           <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
           <span>{orderError}</span>
+        </div>
+      )}
+
+      {!isAuthenticated && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+            <span>You are currently not signed in. Please sign in to authenticate your order.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => switchDemoRole('customer')}
+              className="bg-forest-900 hover:bg-forest-800 text-white font-bold px-3 py-1.5 rounded-xl transition-colors whitespace-nowrap text-[11px]"
+            >
+              One-Click Shopper Sign In
+            </button>
+            <Link
+              to="/login"
+              state={{ from: '/checkout' }}
+              className="text-forest-800 font-bold underline whitespace-nowrap text-[11px]"
+            >
+              Sign In
+            </Link>
+          </div>
         </div>
       )}
 

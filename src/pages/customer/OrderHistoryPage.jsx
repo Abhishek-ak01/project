@@ -93,7 +93,31 @@ export default function OrderHistoryPage() {
       </div>
 
       {/* Orders List */}
-      {loading ? (
+      {!user ? (
+        <div className="bg-white rounded-3xl border border-cream-300 p-12 text-center space-y-4 shadow-subtle">
+          <div className="w-16 h-16 rounded-full bg-cream-200 text-charcoal-400 flex items-center justify-center mx-auto">
+            <ShoppingBag className="w-8 h-8 text-forest-700" />
+          </div>
+          <h3 className="font-bold text-lg text-charcoal-900">Sign in to view your orders</h3>
+          <p className="text-xs text-charcoal-500 max-w-sm mx-auto">
+            Please log in or select a customer persona from the top navigation banner to track your local orders.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <Link
+              to="/login"
+              className="bg-forest-900 hover:bg-forest-800 text-white text-xs font-bold px-6 py-2.5 rounded-full shadow-sm transition-all"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/marketplace"
+              className="bg-cream-100 hover:bg-cream-200 text-charcoal-800 text-xs font-bold px-5 py-2.5 rounded-full border border-cream-300 transition-all"
+            >
+              Browse Marketplace
+            </Link>
+          </div>
+        </div>
+      ) : loading ? (
         <div className="space-y-4">
           {[1, 2].map((i) => (
             <div key={i} className="h-40 rounded-3xl bg-cream-200 animate-pulse"></div>
